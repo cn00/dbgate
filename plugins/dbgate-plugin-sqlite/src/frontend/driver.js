@@ -46,7 +46,10 @@ const driver = {
   title: 'SQLite',
   readOnlySessions: true,
   supportsTransactions: true,
-  showConnectionField: (field, values) => field == 'databaseFile' || field == 'isReadOnly',
+  // showConnectionField: (field, values) => field == 'databaseFile' || field == 'isReadOnly',
+  showConnectionField: (field, values) => {
+    return ['databaseUrl', 'isReadOnly'].includes(field);
+  },
   showConnectionTab: (field) => false,
   beforeConnectionSave: (connection) => ({
     ...connection,
@@ -61,8 +64,8 @@ const driver = {
       ? noSplitSplitterOptions
       : sqliteSplitterOptions,
 
-  // isFileDatabase: true,
-  isElectronOnly: true,
+  isFileDatabase: true,
+//   isElectronOnly: true,
 
   predefinedDataTypes: ['integer', 'real', 'text', 'blob'],
 };

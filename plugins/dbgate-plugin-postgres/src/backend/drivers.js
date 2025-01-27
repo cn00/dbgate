@@ -154,6 +154,7 @@ const drivers = driverBases.map(driverBase => ({
         columns: [],
       };
     }
+    logger.info(`prepare sql: ${sql}`);
     const res = await dbhan.client.query({ text: sql, rowMode: 'array' });
     const columns = extractPostgresColumns(res, dbhan);
     return { rows: (res.rows || []).map(row => zipDataRow(row, columns)), columns };

@@ -1,19 +1,28 @@
 # this compose file is for testing purposes only
 # use it for testing docker containsers built on local machine
-version: "3"
+# version: "3"
 services:
+  local:
+    image: public.ecr.aws/docker/library/node:alpine3.20
+    tty: true
+    working_dir: /home/dbgate-docker
+    # command: ["./entrypoint.sh"]
+    volumes:
+      - ./docker/:/home/dbgate-docker
+    ports:
+      - 3030:3000
+
   dbgate:
     build: docker
+    image: dbgate/dbgate:dev
     # image: dbgate/dbgate:beta-alpine
     # image: dbgate/dbgate:alpine
     # image: dbgate/dbgate:beta
     restart: always
     ports:
       - 3100:3000
-    # volumes:
-    #   - /home/jena/dbgate-data:/root/dbgate-data
-
     volumes:
+      # - ./:/home/dbgate-docker
       - dbgate-data:/root/.dbgate
     
     # environment:

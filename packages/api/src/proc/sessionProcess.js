@@ -23,6 +23,10 @@ let lastActivity = null;
 let currentProfiler = null;
 let executingScripts = 0;
 
+// BigInt.prototype.toJSON = function () {
+//     return Number(this);
+// };
+
 class TableWriter {
   constructor() {
     this.currentRowCount = 0;
@@ -55,7 +59,9 @@ class TableWriter {
 
   row(row) {
     // console.log('ACCEPT ROW', row);
-    this.currentStream.write(JSON.stringify(row) + '\n');
+    const rowString = this.rowString(row);
+    console.log('ROW STRING', rowString);
+    this.currentStream.write(rowString + '\n');
     this.currentRowCount += 1;
 
     if (!this.plannedStats) {
@@ -67,13 +73,16 @@ class TableWriter {
       });
     }
   }
+  rowString(row) {
+    return JSON.stringify(row, (key, value) => typeof value === "bigint" ? Number(value) : value);
+  }
 
   rowFromReader(row) {
     if (!this.initializedFile) {
       process.send({ msgtype: 'initializeFile', jslid: this.jslid });
       this.initializedFile = true;
 
-      fs.writeFileSync(this.currentFile, JSON.stringify(row) + '\n');
+      fs.writeFileSync(this.currentFile, this.rowString(row) + '\n');
       this.currentStream = fs.createWriteStream(this.currentFile, { flags: 'a' });
       this.writeCurrentStats(false, false);
       this.initializedFile = true;

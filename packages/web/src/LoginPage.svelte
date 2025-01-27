@@ -133,7 +133,8 @@
 </script>
 
 <SpecialPageLayout>
-  <div class="heading">{isAdminPage ? 'Admin Log In' : 'Log In'}</div>
+  <div><img src="https://www.smith-nephew.com/-/media/project/smithandnephew/examples/logo.svg"></div>
+  <!-- <div class="heading">{isAdminPage ? 'Admin Log In' : 'Log In'}</div> -->
   <div class="login-link">
     {#if $config?.isAdminLoginForm}
       {#if isAdminPage}

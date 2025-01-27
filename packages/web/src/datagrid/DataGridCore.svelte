@@ -1077,15 +1077,15 @@
 
   $: databaseStatus = useDatabaseStatus({ conid, database });
 
-  // $: console.log('visibleRealColumns', visibleRealColumns);
-  // $: console.log('visibleRowCountUpperBound', visibleRowCountUpperBound);
-  // $: console.log('rowHeight', rowHeight);
-  // $: console.log('containerHeight', containerHeight);
+  $: console.log('visibleRealColumns', visibleRealColumns);
+  $: console.log('visibleRowCountUpperBound', visibleRowCountUpperBound);
+  $: console.log('rowHeight', rowHeight);
+  $: console.log('containerHeight', containerHeight);
 
-  // $: console.log('COLUMNS', columns);
-  // $: console.log('columnSizes.realCount', columnSizes.realCount);
-  // $: console.log('realColumnUniqueNames', realColumnUniqueNames);
-  // $: console.log('columnSizes.realCount', columnSizes.realCount);
+  $: console.log('COLUMNS', columns);
+  $: console.log('columnSizes.realCount', columnSizes.realCount);
+  $: console.log('realColumnUniqueNames', realColumnUniqueNames);
+  $: console.log('columnSizes.realCount', columnSizes.realCount);
 
   $: realColumnUniqueNames = _.range(columnSizes.realCount).map(
     realIndex => (columns[columnSizes.realToModel(realIndex)] || {}).uniqueName

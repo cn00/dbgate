@@ -24,7 +24,7 @@
 
 <SpecialPageLayout>
   <div class="my-6">
-    <div class="title">Sorry, you are not authorized to run DbGate</div>
+    <div class="title">Please login to use DbGate</div>
     {#if error}
       <div class="error">{error}</div>
     {/if}

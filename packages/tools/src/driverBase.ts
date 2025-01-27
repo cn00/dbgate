@@ -141,7 +141,7 @@ export const driverBase = {
       columns: [
         {
           exprType: 'column',
-          columnName,
+          columnName: columnName + '::text',
           alias: 'value',
         },
       ],

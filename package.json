@@ -2,6 +2,7 @@
   "private": true,
   "version": "6.1.3",
   "name": "dbgate-all",
+  "license": "MIT",
   "workspaces": [
     "packages/*",
     "plugins/*",
@@ -55,6 +56,7 @@
     "install:drivers:docker": "node common/defineVolatileDependencies.js docker && cd docker && yarn install && cd ..",
     "install:drivers:packer": "node common/defineVolatileDependencies.js packer/build",
     "prepare:docker": "yarn plugins:copydist && yarn build:web && yarn build:api && yarn copy:docker:build && yarn install:drivers:docker",
+    "docker:alpine": "cd docker && docker buildx build -f Dockerfile-alpine -t dbgate:dev-alpine .",
     "prepare:packer": "yarn plugins:copydist && yarn build:web && yarn build:api && yarn copy:packer:build",
     "start": "concurrently --kill-others-on-fail \"yarn start:api\" \"yarn start:web\"",
     "lib": "concurrently --kill-others-on-fail \"yarn start:sqltree\" \"yarn start:filterparser\" \"yarn start:datalib\" \"yarn start:tools\" \"yarn build:plugins:frontend:watch\"",
@@ -62,8 +64,7 @@
     "ts:web": "yarn workspace dbgate-web ts",
     "ts": "yarn ts:api && yarn ts:web",
     "postinstall": "yarn resetPackagedPlugins && yarn build:lib && patch-package && yarn build:plugins:frontend",
-    "dbgate-serve": "node packages/dbgate/bin/dbgate-serve.js",
-    "workflows": "node common/processWorkflows.js"
+    "dbgate-serve": "node packages/serve/bin/dbgate-serve.js"
   },
   "dependencies": {
     "concurrently": "^5.1.0",

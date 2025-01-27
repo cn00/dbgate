@@ -50,7 +50,7 @@
     connectionStore ||
     writable(
       connection || {
-        server: getCurrentConfig().isDocker ? 'dockerhost' : 'localhost',
+        server: getCurrentConfig().isDocker ? 'dockerhost' : ':memory:',
         engine: '',
       }
     );

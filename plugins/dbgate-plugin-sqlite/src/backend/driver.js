@@ -5,6 +5,8 @@ const Analyser = require('./Analyser');
 const { splitQuery, sqliteSplitterOptions } = require('dbgate-query-splitter');
 const { getLogger, createBulkInsertStreamBase, extractErrorLogData } = global.DBGATE_PACKAGES['dbgate-tools'];
 
+const sqlite3 = require('better-sqlite3');
+
 const logger = getLogger('sqliteDriver');
 
 let betterSqliteValue;
@@ -60,9 +62,9 @@ function runStreamItem(dbhan, sql, options, rowCounter) {
 const driver = {
   ...driverBase,
   analyserClass: Analyser,
-  async connect({ databaseFile, isReadOnly }) {
-    const Database = getBetterSqlite();
-    const client = new Database(databaseFile, { readonly: !!isReadOnly });
+  async connect({ databaseUrl, isReadOnly }) {
+    // const Database = getBetterSqlite();
+    const client = new sqlite3(databaseUrl, { readonly: !!isReadOnly });
     return {
       client,
     };
