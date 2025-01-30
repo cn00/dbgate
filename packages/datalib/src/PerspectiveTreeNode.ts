@@ -692,7 +692,7 @@ export class PerspectiveTableColumnNode extends PerspectiveTreeNode {
       bindingValues: _uniqBy(
         parentRows.map(row => [row[this.foreignKey.columns[0].columnName]]),
         stableStringify
-      ),
+      ) as any[][],
       dataColumns: this.getDataLoadColumns(),
       databaseConfig: this.databaseConfig,
       orderBy: this.getOrderBy(this.refTable),
@@ -1275,7 +1275,7 @@ export class PerspectiveTableReferenceNode extends PerspectiveTableNode {
       bindingValues: _uniqBy(
         parentRows.map(row => [row[this.foreignKey.columns[0].refColumnName]]),
         stableStringify
-      ),
+      ) as any[][],
       dataColumns: this.getDataLoadColumns(),
       databaseConfig: this.databaseConfig,
       orderBy: this.getOrderBy(this.table),
@@ -1440,7 +1440,7 @@ export class PerspectiveCustomJoinTreeNode extends PerspectiveTableNode {
       schemaName: this.table.schemaName,
       pureName: this.table.pureName,
       bindingColumns: this.getParentMatchColumns(),
-      bindingValues: _uniqBy(bindingValues, x => JSON.stringify(x)),
+      bindingValues: _uniqBy(bindingValues, x => JSON.stringify(x)) as any[][],
       dataColumns: this.getDataLoadColumns(),
       allColumns: isDocDb,
       databaseConfig: this.databaseConfig,
