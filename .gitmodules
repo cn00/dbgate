@@ -1,0 +1,3 @@
+[submodule "plugins/dbgate-plugin-duckdb"]
+	path = plugins/dbgate-plugin-duckdb
+	url = github.com:cn00/dbgate-plugin-duckdb.git
