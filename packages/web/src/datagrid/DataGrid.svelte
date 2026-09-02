@@ -239,7 +239,7 @@
         name="references"
         height="30%"
         collapsed={isDetailView}
-        skip={!(showReferences && display?.hasReferences && isProApp())}
+        skip={!(showReferences && display?.hasReferences)}
         data-testid="DataGrid_itemReferences"
         altsidebar
       >

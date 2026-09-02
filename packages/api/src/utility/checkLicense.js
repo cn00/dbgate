@@ -1,19 +1,19 @@
 function checkLicense() {
   return {
     status: 'ok',
-    type: 'community',
+    type: 'premium',
   };
 }
 
 function checkLicenseKey(key) {
   return {
     status: 'ok',
-    type: 'community',
+    type: 'premium',
   };
 }
 
 function isProApp() {
-  return false;
+  return true;
 }
 
 module.exports = {

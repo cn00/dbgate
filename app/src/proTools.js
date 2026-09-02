@@ -1,9 +1,9 @@
 function isProApp() {
-  return false;
+  return true;
 }
 
 function checkLicense(license) {
-  return null;
+  return {status: 'ok'};
 }
 
 module.exports = {

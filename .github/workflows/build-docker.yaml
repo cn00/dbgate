@@ -7,6 +7,8 @@ name: Docker image Community
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
       - v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+
+    branches:
+      - master
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -26,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: dbgate/dbgate
+          images: cn00/dbgate
           flavor: |
             latest=false
           tags: |
@@ -34,19 +36,19 @@ jobs:
 
             type=match,pattern=\d+.\d+.\d+,enable=${{ !contains(github.ref_name, '-docker.') && !contains(github.ref_name, '-beta.') }}
             type=raw,value=latest,enable=${{ !contains(github.ref_name, '-docker.') && !contains(github.ref_name, '-beta.') }}
-      - name: Docker alpine meta
-        id: alpmeta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            dbgate/dbgate
-          flavor: |
-            latest=false
-          tags: |
-            type=raw,value=beta-alpine,enable=${{ contains(github.ref_name, '-docker.') || contains(github.ref_name, '-beta.') }}
+      # - name: Docker alpine meta
+      #   id: alpmeta
+      #   uses: docker/metadata-action@v4
+      #   with:
+      #     images: |
+      #       dbgate/dbgate
+      #     flavor: |
+      #       latest=false
+      #     tags: |
+      #       type=raw,value=beta-alpine,enable=${{ contains(github.ref_name, '-docker.') || contains(github.ref_name, '-beta.') }}
 
-            type=match,pattern=\d+.\d+.\d+,suffix=-alpine,enable=${{ !contains(github.ref_name, '-docker.') && !contains(github.ref_name, '-beta.') }}
-            type=raw,value=alpine,enable=${{ !contains(github.ref_name, '-docker.') && !contains(github.ref_name, '-beta.') }}
+      #       type=match,pattern=\d+.\d+.\d+,suffix=-alpine,enable=${{ !contains(github.ref_name, '-docker.') && !contains(github.ref_name, '-beta.') }}
+      #       type=raw,value=alpine,enable=${{ !contains(github.ref_name, '-docker.') && !contains(github.ref_name, '-beta.') }}
       - name: Use Node.js 22.x
         uses: actions/setup-node@v1
         with:
@@ -85,11 +87,11 @@ jobs:
           context: ./docker
           tags: ${{ steps.meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
-      - name: Build and push alpine
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          context: ./docker
-          file: ./docker/Dockerfile-alpine
-          tags: ${{ steps.alpmeta.outputs.tags }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+      # - name: Build and push alpine
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     push: true
+      #     context: ./docker
+      #     file: ./docker/Dockerfile-alpine
+      #     tags: ${{ steps.alpmeta.outputs.tags }}
+      #     platforms: linux/amd64,linux/arm64,linux/arm/v7
