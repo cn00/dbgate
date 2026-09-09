@@ -39,8 +39,8 @@ class AuthProviderBase {
 
   async getCurrentPermissions(req) {
     const login = this.getCurrentLogin(req);
-    const permissions = process.env[`LOGIN_PERMISSIONS_${login}`];
-    return permissions || process.env.PERMISSIONS;
+    const EnvRbacRepository = require('../rbac/EnvRbacRepository');
+    return new EnvRbacRepository().getEffectivePermissions(login);
   }
 
   async checkCurrentConnectionPermission(req, conid) {
@@ -117,6 +117,13 @@ class OAuthProvider extends AuthProviderBase {
       process.env.OAUTH_LOGIN_FIELD && payload && payload[process.env.OAUTH_LOGIN_FIELD]
         ? payload[process.env.OAUTH_LOGIN_FIELD]
         : 'oauth';
+
+    if (
+      require('../rbac').isDynamicRbac() &&
+      (typeof payload?.[process.env.OAUTH_LOGIN_FIELD] !== 'string' || !payload[process.env.OAUTH_LOGIN_FIELD].trim())
+    ) {
+      return { error: 'DBGM-00000 OAuth response is missing the configured login claim' };
+    }
 
     if (
       process.env.OAUTH_ALLOWED_LOGINS &&

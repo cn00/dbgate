@@ -158,7 +158,15 @@ if (processArgs.startProcess) {
 
 if (processArgs.listenApi) {
   const main = require('./main');
-  main.start();
+  main.start().catch(err => {
+    logger.fatal(
+      { code: err.code },
+      err.message?.startsWith('DBGM-00000')
+        ? err.message
+        : 'DBGM-00000 API initialization failed; check configuration, storage connectivity and migrations'
+    );
+    process.exit(1);
+  });
 }
 
 module.exports = {

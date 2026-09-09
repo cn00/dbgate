@@ -2,6 +2,9 @@
 
 Allows run DbGate data-manipulation scripts.
 
+Dynamic API authorization storage (PostgreSQL, MySQL or SQLite) is documented in
+[RBAC storage](../../docs/rbac-storage.md), including configuration and the current delivery boundary.
+
 ## Installation
 
     yarn add dbgate-api

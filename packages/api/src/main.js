@@ -93,7 +93,8 @@ function registerExpressStatic(app, publicDir) {
   app.use(getExpressPath('/'), express.static(publicDir));
 }
 
-function start() {
+async function start() {
+  await require('./rbac').initializeRbac();
   // console.log('process.argv', process.argv);
 
   const app = express();
@@ -265,6 +266,7 @@ function start() {
 }
 
 function useAllControllers(app, electron) {
+  if (app) useController(app, electron, '/rbac', require('./controllers/rbac'));
   useController(app, electron, '/connections', connections);
   useController(app, electron, '/server-connections', serverConnections);
   useController(app, electron, '/database-connections', databaseConnections);

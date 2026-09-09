@@ -7,6 +7,9 @@ function getTokenLifetime() {
 }
 
 function getTokenSecret() {
+  if (process.env.RBAC_STORAGE_ENGINE && process.env.RBAC_STORAGE_ENGINE !== 'env' && process.env.RBAC_TOKEN_SECRET) {
+    return process.env.RBAC_TOKEN_SECRET;
+  }
   return tokenSecret;
 }
 
