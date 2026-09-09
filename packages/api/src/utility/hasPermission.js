@@ -1,6 +1,7 @@
 const { compilePermissions, testPermission, getPermissionsCacheKey } = require('dbgate-tools');
 const _ = require('lodash');
 const { getAuthProviderFromReq } = require('../auth/authProvider');
+const { isDynamicRbac } = require('../rbac');
 
 const cachedPermissions = {};
 
@@ -16,6 +17,7 @@ async function loadPermissionsFromRequest(req) {
 
 function hasPermission(tested, loadedPermissions) {
   if (!loadedPermissions) {
+    if (isDynamicRbac()) return false;
     // not available, allow all
     return true;
   }
@@ -40,6 +42,13 @@ function connectionHasPermission(connection, loadedPermissions) {
 }
 
 async function testConnectionPermission(connection, req, loadedPermissions) {
+  if (isDynamicRbac()) {
+    const conid = _.isString(connection) ? connection : connection?._id;
+    if (!req || !conid || !(await getAuthProviderFromReq(req).checkCurrentConnectionPermission(req, conid))) {
+      throw new Error('DBGM-00000 Connection permission not granted');
+    }
+    return;
+  }
   if (!loadedPermissions) {
     loadedPermissions = await loadPermissionsFromRequest(req);
   }
@@ -333,7 +342,7 @@ async function testStandardPermission(permission, req, loadedPermissions) {
 }
 
 async function testDatabaseRolePermission(conid, database, requiredRole, req) {
-  if (!process.env.STORAGE_DATABASE) {
+  if (!process.env.STORAGE_DATABASE && !isDynamicRbac()) {
     return;
   }
   const loadedPermissions = await loadPermissionsFromRequest(req);

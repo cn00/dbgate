@@ -101,7 +101,10 @@ async function authenticateMcpRequest(req, res, next) {
 }
 
 async function authMiddleware(req, res, next) {
+  const { isDynamicRbac } = require('../rbac');
+  const dynamicRbac = isDynamicRbac();
   if (req.path == getExpressPath('/mcp')) {
+    if (dynamicRbac) return res.status(403).send('DBGM-00000 MCP identity mapping is not configured for dynamic RBAC');
     try {
       return await authenticateMcpRequest(req, res, next);
     } catch (err) {
@@ -151,6 +154,13 @@ async function authMiddleware(req, res, next) {
   }
 
   if (process.env.BASIC_AUTH) {
+    if (dynamicRbac) {
+      try {
+        await getAuthProviderFromReq(req).assertCurrentUser(req);
+      } catch (_) {
+        return unauthorizedResponse(req, res, 'DBGM-00000 RBAC user is unavailable');
+      }
+    }
     // API is not authorized for basic auth
     return next();
   }
@@ -171,11 +181,20 @@ async function authMiddleware(req, res, next) {
       throw new Error('MCP token cannot be used for the DbGate API');
     }
     req.user = decoded;
+    if (dynamicRbac) {
+      if (!getAuthProviderById(decoded.amoid)) throw new Error('DBGM-00000 Unknown RBAC authentication provider');
+      if (!decoded.rbacUserId) throw new Error('DBGM-00000 Sign in again after enabling RBAC storage');
+      await getAuthProviderFromReq(req).assertCurrentUser(req);
+    }
     markUserAsActive(decoded.licenseUid, token);
 
     return next();
   } catch (err) {
     if (skipAuth) {
+      if (dynamicRbac) {
+        delete req.user;
+        delete req.rbacSnapshot;
+      }
       req.isInvalidToken = true;
       return next();
     }
@@ -197,6 +216,9 @@ module.exports = {
     const { amoid, login, password, isAdminPage } = params;
 
     if (isAdminPage) {
+      if (require('../rbac').isDynamicRbac()) {
+        return { error: 'DBGM-00000 Use the configured identity provider for RBAC administration' };
+      }
       let adminPassword = process.env.ADMIN_PASSWORD;
       if (!adminPassword) {
         const adminConfig = await storage.readConfig({ group: 'admin' });
