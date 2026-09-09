@@ -5,7 +5,7 @@ name: Diflow merge
 'on':
   push:
     branches:
-      - master
+      - master-off
 jobs:
   merge:
     runs-on: ubuntu-latest
